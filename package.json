@@ -1,0 +1,34 @@
+{
+  "name": "to-do-list",
+  "version": "1.0.0",
+  "description": "A to-do list made as a javascript exercise.",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/EriBloo/To-Do-List.git"
+  },
+  "keywords": [
+    "to-do",
+    "to",
+    "do",
+    "list",
+    "organization",
+    "plans"
+  ],
+  "author": "eriBloo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EriBloo/To-Do-List/issues"
+  },
+  "homepage": "https://github.com/EriBloo/To-Do-List#readme",
+  "devDependencies": {
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "date-fns": "^2.16.1"
+  }
+}
