@@ -4,10 +4,49 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="./css/style.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
 	<title>To-Do List</title>
 </head>
 <body>
-	
+	<div class="container">
+		<div class="sidebar">
+			<div class="by-date-wrapper">
+				<div class="by-date">
+					<h2 class="category today current">Today</h2>
+					<h2 class="category week">This week</h2>
+					<h2 class="category month">This month</h2>
+					<h2 class="category all">All</h2>
+				</div>
+			</div>
+			<div class="by-project">
+				<h2 class="category other">Work</h2>
+				<h2 class="category other">Home</h2>
+				<span><i class="fas fa-plus"></i></span>
+			</div>
+		</div>
+		<div class="top">
+			<h1 class="current-project">Today</h1>
+		</div>
+		<div class="content">
+			<div class="task">
+				<span><i class="far fa-circle mark"></i></span>
+				<h3 class="title">Test task</h3>
+				<span class="delete"><i class="fas fa-plus"></i></span>
+				<h4 class="description">Lorem ipsum dolor sit amet.</h4>
+			</div>
+			<div class="task done">
+				<span><i class="far fa-check-circle mark"></i></i></span>
+				<h3 class="title">Test task, but done already</h3>
+				<span class="delete"><i class="fas fa-plus"></i></span>
+				<h4 class="description">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure, culpa?</h4>
+			</div>
+			<div class="add-task">
+				<i class="fas fa-plus"></i>
+				<h3>Add task</h3>
+			</div>
+		</div>
+	</div>
 	<script src="./main.js"></script>
 </body>
 </html>
