@@ -4,9 +4,9 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="./css/style.css">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lobster+Two&family=Roboto:wght@100;300;400&display=swap">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
-	<title>To-Do List</title>
+	<title>Simply-Do</title>
 </head>
 <body>
 	<div class="container">
@@ -26,20 +26,64 @@
 			</div>
 		</div>
 		<div class="top">
+			<h1 class="site-title">Simply-Do</h1>
 			<h1 class="current-project">Today</h1>
 		</div>
 		<div class="content">
 			<div class="task">
-				<span><i class="far fa-circle mark"></i></span>
+				<span class="mark"><i class="far fa-circle"></i></span>
 				<h3 class="title">Test task</h3>
+				<span class="arrow-up"><i class="fas fa-caret-up"></i></span>
+				<span class="arrow-down"><i class="fas fa-caret-down"></i></span>
 				<span class="delete"><i class="fas fa-plus"></i></span>
 				<h4 class="description">Lorem ipsum dolor sit amet.</h4>
+				<h4 class="created">created: 20 sep 2020</h4>
+				<h4 class="due">due: 2 nov 2020</h4>
+				<span class="edit"><i class="fas fa-pen"></i></span>
 			</div>
 			<div class="task done">
-				<span><i class="far fa-check-circle mark"></i></i></span>
+				<span class="mark"><i class="far fa-check-circle"></i></i></span>
 				<h3 class="title">Test task, but done already</h3>
+				<span class="arrow-up"><i class="fas fa-caret-up"></i></span>
+				<span class="arrow-down"><i class="fas fa-caret-down"></i></span>
 				<span class="delete"><i class="fas fa-plus"></i></span>
 				<h4 class="description">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure, culpa?</h4>
+				<h4 class="created">created: 20 sep 2020</h4>
+				<h4 class="due">due: 2 nov 2020</h4>
+				<span class="edit"><i class="fas fa-pen"></i></span>
+			</div>
+			<div class="task expanded">
+				<span class="mark"><i class="far fa-circle"></i></span>
+				<h3 class="title">Test task expanded</h3>
+				<span class="arrow-up"><i class="fas fa-caret-up"></i></span>
+				<span class="arrow-down"><i class="fas fa-caret-down"></i></span>
+				<span class="delete"><i class="fas fa-plus"></i></span>
+				<h4 class="description">Lorem ipsum dolor sit, amet consectetur adipisicing.</h4>
+				<h4 class="created">created: 20 sep 2020</h4>
+				<h4 class="due">due: 2 nov 2020</h4>
+				<span class="edit"><i class="fas fa-pen"></i></span>
+			</div>
+			<div class="task">
+				<span class="mark"><i class="far fa-circle"></i></span>
+				<h3 class="title">Test task without description</h3>
+				<span class="arrow-up"><i class="fas fa-caret-up"></i></span>
+				<span class="arrow-down"><i class="fas fa-caret-down"></i></span>
+				<span class="delete"><i class="fas fa-plus"></i></span>
+				<h4 class="description"></h4>
+				<h4 class="created">created: 20 sep 2020</h4>
+				<h4 class="due">due: 2 nov 2020</h4>
+				<span class="edit"><i class="fas fa-pen"></i></span>
+			</div>
+			<div class="task">
+				<span class="mark"><i class="far fa-circle"></i></span>
+				<h3 class="title">Different task</h3>
+				<span class="arrow-up"><i class="fas fa-caret-up"></i></span>
+				<span class="arrow-down"><i class="fas fa-caret-down"></i></span>
+				<span class="delete"><i class="fas fa-plus"></i></span>
+				<h4 class="description">Lorem ipsum dolor sit amet.</h4>
+				<h4 class="created">created: 20 sep 2020</h4>
+				<h4 class="due">due: 2 nov 2020</h4>
+				<span class="edit"><i class="fas fa-pen"></i></span>
 			</div>
 			<div class="add-task">
 				<i class="fas fa-plus"></i>
