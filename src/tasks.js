@@ -3,7 +3,7 @@ import { isBefore } from "date-fns";
 const Task = (title, dueDate, id, description = "", category = "") => {
 	const getTitle = () => title;
 	const setTitle = (newTitle) => title = newTitle;
-	const getDesctiption = () => description;
+	const getDescription = () => description;
 	const setDescription = (newDescription) => description = newDescription;
 	const getCategory = () => category;
 	const setCategory = (newCategory) => category = newCategory;
@@ -19,10 +19,9 @@ const Task = (title, dueDate, id, description = "", category = "") => {
 	const toggleFinished = () => finished = !finished;
 	const getFinished = () => finished;
 
-	return { getTitle, setTitle, getDesctiption, setDescription, getCategory, setCategory, getDueDate, setDueDate, getId, setId, getCreationDate, toggleFinished, getFinished }
+	return { getTitle, setTitle, getDescription, setDescription, getCategory, setCategory, getDueDate, setDueDate, getId, setId, getCreationDate, toggleFinished, getFinished }
 }
 
-/* NOT USED AT THE MOMENT, BUT LEFT IF NEEDED
 const Emitter = (() => {
 	const _events = [];
 
@@ -46,42 +45,30 @@ const Emitter = (() => {
 		}
 
 		_events[name].forEach((listener) => {
-			listener(data);
+			listener(...data);
 		});
 	}
 
 	return { on, remove, emit }
 })();
-*/
 
 const TaskStorage = (() => {
 	let _taskStore = [];
 	let _currentId = 0;
-	let _lastCall = null;
-	let _lastData = null;
-
-	const _saveLast = (call, data = null) => {
-		_lastCall = call;
-		_lastData = data;
-	}
-	const _callLast = () => {
-		if (_lastCall) {
-			_lastCall(_lastData)
-		}
-	}
 
 	const addNewTask = (title, dueDate, description = "", category = "") => {
 		const task = Task(title, new Date(dueDate), _currentId, description, category.toLowerCase());
 		_taskStore.push(task);
 		_currentId += 1;
-		_callLast();
+		Emitter.emit("changeTasks")
 	}
 	const removeTask = (id) => {
+		id = parseInt(id);
 		_taskStore = _taskStore.filter((task) => task.getId() !== id );
-		_callLast();
+		Emitter.emit("changeTasks");
 	}
 	const getAllTasks = () => {
-		_saveLast(getAllTasks);
+		Emitter.emit("getTasks", getAllTasks);
 		return _taskStore;
 	}
 	const getTasksToDate = (date) => {
@@ -92,7 +79,7 @@ const TaskStorage = (() => {
 				tasksToReturn.push(task);
 			}
 		}
-		_saveLast(getTasksToDate, date);
+		Emitter.emit("getTasks", getTasksToDate, date);
 		return tasksToReturn;
 	}
 	const getTaskById = (id) => {
@@ -111,21 +98,33 @@ const TaskStorage = (() => {
 				tasksToReturn.push(task);
 			}
 		}
-		_saveLast(getTasksByCategory, category);
+		Emitter.emit("getTasks", getTasksByCategory, category)
 		return tasksToReturn;
 	}
 
 	return { addNewTask, removeTask, getAllTasks, getTasksToDate, getTaskById, getTasksByCategory }
 })();
 
-const currentTasks = (() => {
-	const _currentTasks = [];
-	
+const CurrentTasks = (() => {
+	let _currentTasks = [];
+	let _lastFunction = null;
+	let _lastData = null;
+
+	const _saveLast = (f, d) => {
+		_lastFunction = f;
+		_lastData = d;
+	}
+	const _updateCurrent = () => {
+		setCurrentTasks(_lastFunction(_lastData));
+	}
 	const getCurrentTasks = () => _currentTasks;
 	const setCurrentTasks = (tasks) => _currentTasks = tasks;
+
+	Emitter.on("getTasks", _saveLast);
+	Emitter.on("changeTasks", _updateCurrent)
 
 	return { getCurrentTasks, setCurrentTasks }
 	
 })();
 
-export { TaskStorage };
+export { TaskStorage, CurrentTasks };
