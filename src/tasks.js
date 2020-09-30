@@ -58,7 +58,7 @@ const TaskStorage = (() => {
 	let _currentId = 0;
 
 	const addCategory = (category) => {
-		_categories.add(category);
+		_categories.add(category.trim().toLowerCase());
 	}
 
 	const getCategories = () => _categories;
@@ -68,9 +68,9 @@ const TaskStorage = (() => {
 	}
 
 	const addNewTask = (title, dueDate, description = "", category = "") => {
-		const task = Task(title, new Date(dueDate), _currentId, description, category.toLowerCase());
+		const task = Task(title, new Date(dueDate), _currentId, description, category.trim().toLowerCase());
 		if (category) {
-			_categories.add(category);
+			addCategory(category);
 		}
 		_taskStore.push(task);
 		_currentId += 1;
@@ -88,7 +88,7 @@ const TaskStorage = (() => {
 		task.setDescription(newDescription);
 		task.setCategory(newCategory);
 		if (newCategory) {
-			_categories.add(newCategory);
+			addCategory(newCategory);
 		}
 	}
 	const getAllTasks = () => {

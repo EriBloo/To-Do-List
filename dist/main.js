@@ -18226,6 +18226,11 @@ function createTaskElement(task) {
 	descH4.textContent = task.getDescription();
 	taskDiv.appendChild(descH4);
 
+	const categoryH3 = document.createElement("h3");
+	categoryH3.classList.add("in-category");
+	categoryH3.textContent = task.getCategory();
+	taskDiv.appendChild(categoryH3);
+
 	const createH4 = document.createElement("h4");
 	createH4.classList.add("created");
 	createH4.textContent = `Created: ${Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["format"])(task.getCreationDate(), "d MMMM yyyy")}`;
@@ -18336,13 +18341,21 @@ function updateContent(tasks) {
 }
 
 function createCategoryElement(category) {
+	const categoryDiv = document.createElement("div");
+	categoryDiv.classList.add("category-wrapper");
+	createEvents.byCategory(categoryDiv, category);
+
+	const categoryIcon = document.createElement("i");
+	categoryIcon.classList.add("fas");
+	categoryIcon.classList.add("fa-circle");
+	categoryDiv.appendChild(categoryIcon);
+
 	const categoryH2 = document.createElement("h2");
-	categoryH2.classList.add("category");
 	categoryH2.classList.add("other");
 	categoryH2.textContent = category;
-	createEvents.byCategory(categoryH2, category);
+	categoryDiv.appendChild(categoryH2);
 
-	return categoryH2;
+	return categoryDiv;
 }
 
 function clearCategories() {
@@ -18641,7 +18654,7 @@ const TaskStorage = (() => {
 	let _currentId = 0;
 
 	const addCategory = (category) => {
-		_categories.add(category);
+		_categories.add(category.trim().toLowerCase());
 	}
 
 	const getCategories = () => _categories;
@@ -18651,9 +18664,9 @@ const TaskStorage = (() => {
 	}
 
 	const addNewTask = (title, dueDate, description = "", category = "") => {
-		const task = Task(title, new Date(dueDate), _currentId, description, category.toLowerCase());
+		const task = Task(title, new Date(dueDate), _currentId, description, category.trim().toLowerCase());
 		if (category) {
-			_categories.add(category);
+			addCategory(category);
 		}
 		_taskStore.push(task);
 		_currentId += 1;
@@ -18671,7 +18684,7 @@ const TaskStorage = (() => {
 		task.setDescription(newDescription);
 		task.setCategory(newCategory);
 		if (newCategory) {
-			_categories.add(newCategory);
+			addCategory(newCategory);
 		}
 	}
 	const getAllTasks = () => {
