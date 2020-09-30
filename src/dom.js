@@ -168,6 +168,7 @@ function createCategoryElement(category) {
 	categoryH2.classList.add("category");
 	categoryH2.classList.add("other");
 	categoryH2.textContent = category;
+	createEvents.byCategory(categoryH2, category);
 
 	return categoryH2;
 }
@@ -292,6 +293,8 @@ const createEventsForButtons = (() => {
 			e.target.firstChild.classList.remove("fa-check-circle");
 			e.target.firstChild.classList.add("fa-circle");
 		}
+		const id = e.target.parentNode.getAttribute("data");
+		TaskStorage.getTaskById(id).toggleFinished();
 	}
 
 	const formCancel = () => {
