@@ -69,7 +69,9 @@ const TaskStorage = (() => {
 
 	const addNewTask = (title, dueDate, description = "", category = "") => {
 		const task = Task(title, new Date(dueDate), _currentId, description, category.toLowerCase());
-		_categories.add(category);
+		if (category) {
+			_categories.add(category);
+		}
 		_taskStore.push(task);
 		_currentId += 1;
 		Emitter.emit("changeTasks")
@@ -78,6 +80,16 @@ const TaskStorage = (() => {
 		id = parseInt(id);
 		_taskStore = _taskStore.filter((task) => task.getId() !== id );
 		Emitter.emit("changeTasks");
+	}
+	const editTask = (id, newTitle, newDueDate, newDescription, newCategory) => {
+		const task = getTaskById(id);
+		task.setTitle(newTitle);
+		task.setDueDate(new Date(newDueDate));
+		task.setDescription(newDescription);
+		task.setCategory(newCategory);
+		if (newCategory) {
+			_categories.add(newCategory);
+		}
 	}
 	const getAllTasks = () => {
 		Emitter.emit("getTasks", getAllTasks);
@@ -95,6 +107,7 @@ const TaskStorage = (() => {
 		return tasksToReturn;
 	}
 	const getTaskById = (id) => {
+		id = parseInt(id);
 		for (let task of _taskStore) {
 			if (task.getId() === id) {
 				return task;
@@ -114,7 +127,7 @@ const TaskStorage = (() => {
 		return tasksToReturn;
 	}
 
-	return { addCategory, getCategories, removeCategory, addNewTask, removeTask, getAllTasks, getTasksToDate, getTaskById, getTasksByCategory }
+	return { addCategory, getCategories, removeCategory, editTask, addNewTask, removeTask, getAllTasks, getTasksToDate, getTaskById, getTasksByCategory }
 })();
 
 const CurrentTasks = (() => {

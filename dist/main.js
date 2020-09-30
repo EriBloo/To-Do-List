@@ -18237,6 +18237,7 @@ function createTaskElement(task) {
 
 	const editSpan = document.createElement("span");
 	editSpan.classList.add("edit");
+	editSpan.addEventListener("click", createEventsForButtons.editTask);
 	const editIcon = document.createElement("i");
 	editIcon.classList.add("fas");
 	editIcon.classList.add("fa-pen");
@@ -18257,14 +18258,14 @@ function createPopUpElement() {
 	return popUpContainerDiv;
 }
 
-function createTaskFormElement() {
+function createTaskFormElement(title, submitTarget) {
 	const taskForm = document.createElement("form");
 	taskForm.classList.add("modify-task");
 	taskForm.setAttribute("method", "post");
-	taskForm.addEventListener("submit", createEventsForButtons.formSubmit);
+	taskForm.addEventListener("submit", submitTarget);
 
 	const titleH2 = document.createElement("h2");
-	titleH2.textContent = "Create new task";
+	titleH2.textContent = title;
 	taskForm.appendChild(titleH2);
 
 	const titleInput = document.createElement("input");
@@ -18414,14 +18415,14 @@ const createEventsForButtons = (() => {
 		addTaskElement.addEventListener("click", () => {
 			const containerElement = document.querySelector(".container");
 			const popUpElement = createPopUpElement();
-			const taskForm = createTaskFormElement();
-			popUpElement.firstChild.appendChild(taskForm);
+			const taskFormElement = createTaskFormElement("Create new task", formAddTask);
+			popUpElement.firstChild.appendChild(taskFormElement);
 			containerElement.appendChild(popUpElement);
 		});
 	}
 
 	const removeTask = (e) => {
-		const id = e.target.parentNode.parentNode.getAttribute("data");
+		const id = e.target.parentNode.getAttribute("data");
 		const taskToRemove = document.querySelector(`.task[data="${id}"]`);
 		const contentElement = document.querySelector(".content");
 		contentElement.removeChild(taskToRemove);
@@ -18436,13 +18437,29 @@ const createEventsForButtons = (() => {
 		}
 	}
 
+	const editTask = (e) => {
+		const id = e.target.parentNode.getAttribute("data");
+		const task = _tasks_js__WEBPACK_IMPORTED_MODULE_1__["TaskStorage"].getTaskById(id);
+		const containerElement = document.querySelector(".container");
+		const popUpElement = createPopUpElement();
+		const taskFormElement = createTaskFormElement("Edit task", formEditTask.bind(null, id));
+
+		taskFormElement.querySelector(".form-title").value = task.getTitle();
+		taskFormElement.querySelector(".form-description").value = task.getDescription();
+		taskFormElement.querySelector(".form-category").value = task.getCategory();
+		taskFormElement.querySelector(".form-date").value = Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["format"])(task.getDueDate(), "yyyy-MM-dd");
+
+		popUpElement.firstChild.appendChild(taskFormElement);
+		containerElement.appendChild(popUpElement);
+	}
+
 	const formCancel = () => {
 		const containerElement = document.querySelector(".container");
 		const popUpElement = document.querySelector(".pop-up-container");
 		containerElement.removeChild(popUpElement);
 	}
 
-	const formSubmit = (e) => {
+	const formAddTask = (e) => {
 		e.preventDefault();
 		const inputTitle = e.target.querySelector(".form-title");
 		const inputDate = e.target.querySelector(".form-date");
@@ -18450,6 +18467,25 @@ const createEventsForButtons = (() => {
 		const inputCategory = e.target.querySelector(".form-category");
 
 		_tasks_js__WEBPACK_IMPORTED_MODULE_1__["TaskStorage"].addNewTask(inputTitle.value, inputDate.value, inputDescription.value, inputCategory.value);
+
+		clearContent();
+		updateContent(_tasks_js__WEBPACK_IMPORTED_MODULE_1__["CurrentTasks"].getCurrentTasks());
+
+		clearCategories();
+		updateCategories(_tasks_js__WEBPACK_IMPORTED_MODULE_1__["TaskStorage"].getCategories());
+
+		formCancel();
+	}
+
+	const formEditTask = (id, e) => {
+		e.preventDefault();
+		const inputTitle = e.target.querySelector(".form-title");
+		const inputDate = e.target.querySelector(".form-date");
+		const inputDescription = e.target.querySelector(".form-description");
+		const inputCategory = e.target.querySelector(".form-category");
+
+		_tasks_js__WEBPACK_IMPORTED_MODULE_1__["TaskStorage"].editTask(id, inputTitle.value, inputDate.value, inputDescription.value, inputCategory.value);
+
 		clearContent();
 		updateContent(_tasks_js__WEBPACK_IMPORTED_MODULE_1__["CurrentTasks"].getCurrentTasks());
 
@@ -18483,7 +18519,7 @@ const createEventsForButtons = (() => {
 		});
 	}
 
-	return { addTask, removeTask, expandTask, formCancel, formSubmit, addCategory }
+	return { addTask, removeTask, expandTask, editTask, formCancel, addCategory }
 })();
 
 
@@ -18600,7 +18636,9 @@ const TaskStorage = (() => {
 
 	const addNewTask = (title, dueDate, description = "", category = "") => {
 		const task = Task(title, new Date(dueDate), _currentId, description, category.toLowerCase());
-		_categories.add(category);
+		if (category) {
+			_categories.add(category);
+		}
 		_taskStore.push(task);
 		_currentId += 1;
 		Emitter.emit("changeTasks")
@@ -18609,6 +18647,16 @@ const TaskStorage = (() => {
 		id = parseInt(id);
 		_taskStore = _taskStore.filter((task) => task.getId() !== id );
 		Emitter.emit("changeTasks");
+	}
+	const editTask = (id, newTitle, newDueDate, newDescription, newCategory) => {
+		const task = getTaskById(id);
+		task.setTitle(newTitle);
+		task.setDueDate(new Date(newDueDate));
+		task.setDescription(newDescription);
+		task.setCategory(newCategory);
+		if (newCategory) {
+			_categories.add(newCategory);
+		}
 	}
 	const getAllTasks = () => {
 		Emitter.emit("getTasks", getAllTasks);
@@ -18626,6 +18674,7 @@ const TaskStorage = (() => {
 		return tasksToReturn;
 	}
 	const getTaskById = (id) => {
+		id = parseInt(id);
 		for (let task of _taskStore) {
 			if (task.getId() === id) {
 				return task;
@@ -18645,7 +18694,7 @@ const TaskStorage = (() => {
 		return tasksToReturn;
 	}
 
-	return { addCategory, getCategories, removeCategory, addNewTask, removeTask, getAllTasks, getTasksToDate, getTaskById, getTasksByCategory }
+	return { addCategory, getCategories, removeCategory, editTask, addNewTask, removeTask, getAllTasks, getTasksToDate, getTaskById, getTasksByCategory }
 })();
 
 const CurrentTasks = (() => {
