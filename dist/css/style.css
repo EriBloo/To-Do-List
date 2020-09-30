@@ -75,12 +75,30 @@ body {
         margin-right: 0.5rem;
         color: #a0c1b8;
         padding-left: 0.5rem; }
-      .container .sidebar .by-project .fa-plus {
-        font-size: 1.5rem;
-        color: #709fb0;
-        margin-top: 1rem;
-        margin-left: 0.5rem;
-        cursor: pointer; }
+      .container .sidebar .by-project .add-category-wrapper {
+        display: flex;
+        align-items: center; }
+        .container .sidebar .by-project .add-category-wrapper .fa-plus {
+          font-size: 1.5rem;
+          color: #709fb0;
+          margin-top: 1rem;
+          margin-left: 0.5rem;
+          cursor: pointer; }
+        .container .sidebar .by-project .add-category-wrapper input {
+          height: 2rem;
+          width: calc(80% - 0.7rem);
+          background-color: inherit;
+          border: none;
+          border-bottom: solid #bbbbbb 1px;
+          font-size: 1.4rem;
+          font-weight: 100;
+          font-family: inherit;
+          margin-top: 1rem;
+          margin-left: 0.7rem;
+          outline: none;
+          transition: opacity 1s ease;
+          opacity: 0;
+          pointer-events: none; }
     .container .sidebar .category {
       font-weight: 100;
       font-size: 1.5rem;

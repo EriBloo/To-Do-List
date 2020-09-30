@@ -125,6 +125,7 @@ function createTaskFormElement() {
 	dateInput.setAttribute("type", "date");
 	dateInput.setAttribute("name", "date");
 	dateInput.setAttribute("title", "Due Date");
+	dateInput.setAttribute("min", format(new Date(), "yyyy-MM-dd"));
 	dateInput.setAttribute("required", "true");
 	taskForm.appendChild(dateInput);
 
@@ -157,6 +158,31 @@ function updateContent(tasks) {
 
 	for (let task of tasks) {
 		contentElement.insertBefore(createTaskElement(task), addTaskElement);
+	}
+}
+
+function createCategoryElement(category) {
+	const categoryH2 = document.createElement("h2");
+	categoryH2.classList.add("category");
+	categoryH2.classList.add("other");
+	categoryH2.textContent = category;
+
+	return categoryH2;
+}
+
+function clearCategories() {
+	const projectElement = document.querySelector(".by-project");
+	while (projectElement.childElementCount > 1) {
+		projectElement.removeChild(projectElement.firstChild);
+	}
+}
+
+function updateCategories(categories) {
+	const projectElement = document.querySelector(".by-project");
+	const addCategoryElement = document.querySelector(".add-category-wrapper");
+
+	for (let category of categories) {
+		projectElement.insertBefore(createCategoryElement(category), addCategoryElement);
 	}
 }
 
@@ -255,10 +281,37 @@ const createEventsForButtons = (() => {
 		clearContent();
 		updateContent(CurrentTasks.getCurrentTasks());
 
+		clearCategories();
+		updateCategories(TaskStorage.getCategories());
+
 		formCancel();
 	}
 
-	return { addTask, removeTask, expandTask, formCancel, formSubmit }
+	const addCategory = () => {
+		const categoryButton = document.querySelector(".add-category-wrapper .fa-plus");
+		const categoryInput = document.querySelector(".add-category-wrapper input");
+		categoryButton.addEventListener("click", () => {
+			categoryInput.classList.toggle("active");
+			if (categoryInput.classList.contains("active")) {
+				categoryInput.style["opacity"] = 1;
+				categoryInput.style["pointer-events"] = "all";
+				categoryInput.focus();
+			}
+			else {
+				categoryInput.style["opacity"] = 0;
+				categoryInput.style["pointer-events"] = "none";
+				categoryInput.blur();
+				if (categoryInput.value) {
+					TaskStorage.addCategory(categoryInput.value);
+					categoryInput.value = "";
+					clearCategories();
+					updateCategories(TaskStorage.getCategories());
+				}
+			}
+		});
+	}
+
+	return { addTask, removeTask, expandTask, formCancel, formSubmit, addCategory }
 })();
 
 export { createEvents, createEventsForButtons }

@@ -18297,6 +18297,7 @@ function createTaskFormElement() {
 	dateInput.setAttribute("type", "date");
 	dateInput.setAttribute("name", "date");
 	dateInput.setAttribute("title", "Due Date");
+	dateInput.setAttribute("min", Object(date_fns__WEBPACK_IMPORTED_MODULE_0__["format"])(new Date(), "yyyy-MM-dd"));
 	dateInput.setAttribute("required", "true");
 	taskForm.appendChild(dateInput);
 
@@ -18329,6 +18330,31 @@ function updateContent(tasks) {
 
 	for (let task of tasks) {
 		contentElement.insertBefore(createTaskElement(task), addTaskElement);
+	}
+}
+
+function createCategoryElement(category) {
+	const categoryH2 = document.createElement("h2");
+	categoryH2.classList.add("category");
+	categoryH2.classList.add("other");
+	categoryH2.textContent = category;
+
+	return categoryH2;
+}
+
+function clearCategories() {
+	const projectElement = document.querySelector(".by-project");
+	while (projectElement.childElementCount > 1) {
+		projectElement.removeChild(projectElement.firstChild);
+	}
+}
+
+function updateCategories(categories) {
+	const projectElement = document.querySelector(".by-project");
+	const addCategoryElement = document.querySelector(".add-category-wrapper");
+
+	for (let category of categories) {
+		projectElement.insertBefore(createCategoryElement(category), addCategoryElement);
 	}
 }
 
@@ -18427,10 +18453,37 @@ const createEventsForButtons = (() => {
 		clearContent();
 		updateContent(_tasks_js__WEBPACK_IMPORTED_MODULE_1__["CurrentTasks"].getCurrentTasks());
 
+		clearCategories();
+		updateCategories(_tasks_js__WEBPACK_IMPORTED_MODULE_1__["TaskStorage"].getCategories());
+
 		formCancel();
 	}
 
-	return { addTask, removeTask, expandTask, formCancel, formSubmit }
+	const addCategory = () => {
+		const categoryButton = document.querySelector(".add-category-wrapper .fa-plus");
+		const categoryInput = document.querySelector(".add-category-wrapper input");
+		categoryButton.addEventListener("click", () => {
+			categoryInput.classList.toggle("active");
+			if (categoryInput.classList.contains("active")) {
+				categoryInput.style["opacity"] = 1;
+				categoryInput.style["pointer-events"] = "all";
+				categoryInput.focus();
+			}
+			else {
+				categoryInput.style["opacity"] = 0;
+				categoryInput.style["pointer-events"] = "none";
+				categoryInput.blur();
+				if (categoryInput.value) {
+					_tasks_js__WEBPACK_IMPORTED_MODULE_1__["TaskStorage"].addCategory(categoryInput.value);
+					categoryInput.value = "";
+					clearCategories();
+					updateCategories(_tasks_js__WEBPACK_IMPORTED_MODULE_1__["TaskStorage"].getCategories());
+				}
+			}
+		});
+	}
+
+	return { addTask, removeTask, expandTask, formCancel, formSubmit, addCategory }
 })();
 
 
@@ -18460,7 +18513,7 @@ _dom_js__WEBPACK_IMPORTED_MODULE_1__["createEvents"].allTasks(document.querySele
 document.querySelector(".today").click();
 
 _dom_js__WEBPACK_IMPORTED_MODULE_1__["createEventsForButtons"].addTask();
-
+_dom_js__WEBPACK_IMPORTED_MODULE_1__["createEventsForButtons"].addCategory();
 
 /***/ }),
 
@@ -18532,10 +18585,22 @@ const Emitter = (() => {
 
 const TaskStorage = (() => {
 	let _taskStore = [];
+	let _categories = new Set();
 	let _currentId = 0;
+
+	const addCategory = (category) => {
+		_categories.add(category);
+	}
+
+	const getCategories = () => _categories;
+
+	const removeCategory = (category) => {
+		_categories.delete(category);
+	}
 
 	const addNewTask = (title, dueDate, description = "", category = "") => {
 		const task = Task(title, new Date(dueDate), _currentId, description, category.toLowerCase());
+		_categories.add(category);
 		_taskStore.push(task);
 		_currentId += 1;
 		Emitter.emit("changeTasks")
@@ -18580,7 +18645,7 @@ const TaskStorage = (() => {
 		return tasksToReturn;
 	}
 
-	return { addNewTask, removeTask, getAllTasks, getTasksToDate, getTaskById, getTasksByCategory }
+	return { addCategory, getCategories, removeCategory, addNewTask, removeTask, getAllTasks, getTasksToDate, getTaskById, getTasksByCategory }
 })();
 
 const CurrentTasks = (() => {

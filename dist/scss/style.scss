@@ -97,13 +97,35 @@ body {
 				color: #a0c1b8;
 				padding-left: 0.5rem;
 			}
+			
+			.add-category-wrapper {
+				display: flex;
+				align-items: center;
 
-			.fa-plus {
-				font-size: 1.5rem;
-				color: #709fb0;
-				margin-top: 1rem;
-				margin-left: 0.5rem;
-				cursor: pointer;
+				.fa-plus {
+					font-size: 1.5rem;
+					color: #709fb0;
+					margin-top: 1rem;
+					margin-left: 0.5rem;
+					cursor: pointer;
+				}
+
+				input {
+					height: 2rem;
+					width: calc(80% - 0.7rem);
+					background-color: inherit;
+					border: none;
+					border-bottom: solid #bbbbbb 1px; 
+					font-size: 1.4rem;
+					font-weight: 100;
+					font-family: inherit;
+					margin-top: 1rem;
+					margin-left: 0.7rem;
+					outline: none;
+					transition: opacity 1s ease;
+					opacity: 0;
+					pointer-events: none;
+				}
 			}
 		}
 

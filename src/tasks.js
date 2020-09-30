@@ -54,10 +54,22 @@ const Emitter = (() => {
 
 const TaskStorage = (() => {
 	let _taskStore = [];
+	let _categories = new Set();
 	let _currentId = 0;
+
+	const addCategory = (category) => {
+		_categories.add(category);
+	}
+
+	const getCategories = () => _categories;
+
+	const removeCategory = (category) => {
+		_categories.delete(category);
+	}
 
 	const addNewTask = (title, dueDate, description = "", category = "") => {
 		const task = Task(title, new Date(dueDate), _currentId, description, category.toLowerCase());
+		_categories.add(category);
 		_taskStore.push(task);
 		_currentId += 1;
 		Emitter.emit("changeTasks")
@@ -102,7 +114,7 @@ const TaskStorage = (() => {
 		return tasksToReturn;
 	}
 
-	return { addNewTask, removeTask, getAllTasks, getTasksToDate, getTaskById, getTasksByCategory }
+	return { addCategory, getCategories, removeCategory, addNewTask, removeTask, getAllTasks, getTasksToDate, getTaskById, getTasksByCategory }
 })();
 
 const CurrentTasks = (() => {

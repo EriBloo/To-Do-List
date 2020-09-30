@@ -9,3 +9,4 @@ createEvents.allTasks(document.querySelector(".all"));
 document.querySelector(".today").click();
 
 createEventsForButtons.addTask();
+createEventsForButtons.addCategory();
