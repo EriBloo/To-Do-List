@@ -161,10 +161,12 @@ body {
         font-size: 1.5rem;
         text-decoration: none;
         cursor: pointer; }
-      .container .content .task .fa-circle {
-        color: #cbaf87; }
-      .container .content .task .fa-check-circle {
-        color: #89beb3; }
+        .container .content .task .mark .fa-circle {
+          color: #cbaf87;
+          pointer-events: none; }
+        .container .content .task .mark .fa-check-circle {
+          color: #89beb3;
+          pointer-events: none; }
       .container .content .task .title {
         grid-column: 2/3;
         grid-row: 1/2;
@@ -242,7 +244,6 @@ body {
     .container .content .expanded {
       height: 8rem; }
     .container .content .done {
-      text-decoration: line-through;
       color: #888888; }
     .container .content .add-task {
       width: fit-content;

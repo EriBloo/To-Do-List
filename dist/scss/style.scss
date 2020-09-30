@@ -206,16 +206,19 @@ body {
 				font-size: 1.5rem;
 				text-decoration: none;
 				cursor: pointer;
+
+				.fa-circle {
+					color: #cbaf87;
+					pointer-events: none;
+				}
+			
+				.fa-check-circle {
+					color: #89beb3;
+					pointer-events: none;
+				}
+			
 			}
-		
-			.fa-circle {
-				color: #cbaf87;
-			}
-		
-			.fa-check-circle {
-				color: #89beb3;
-			}
-		
+	
 			.title {
 				grid-column: 2/3;
 				grid-row: 1/2;
@@ -322,7 +325,6 @@ body {
 		}
 
 		.done {
-			text-decoration: line-through;
 			color: #888888;
 		}
 

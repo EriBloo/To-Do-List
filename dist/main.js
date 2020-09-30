@@ -18184,6 +18184,7 @@ function createTaskElement(task) {
 
 	const markSpan = document.createElement("span");
 	markSpan.classList.add("mark");
+	markSpan.addEventListener("click", createEventsForButtons.markDone)
 	const markIcon = document.createElement("i");
 	markIcon.classList.add("far");
 	markIcon.classList.add(task.getFinished() ? "fa-check-circle" : "fa-circle");
@@ -18453,6 +18454,18 @@ const createEventsForButtons = (() => {
 		containerElement.appendChild(popUpElement);
 	}
 
+	const markDone = (e) => {
+		e.target.parentNode.classList.toggle("done");
+		if (e.target.parentNode.classList.contains("done")) {
+			e.target.firstChild.classList.remove("fa-circle");
+			e.target.firstChild.classList.add("fa-check-circle");
+		}
+		else {
+			e.target.firstChild.classList.remove("fa-check-circle");
+			e.target.firstChild.classList.add("fa-circle");
+		}
+	}
+
 	const formCancel = () => {
 		const containerElement = document.querySelector(".container");
 		const popUpElement = document.querySelector(".pop-up-container");
@@ -18519,7 +18532,7 @@ const createEventsForButtons = (() => {
 		});
 	}
 
-	return { addTask, removeTask, expandTask, editTask, formCancel, addCategory }
+	return { addTask, removeTask, expandTask, editTask, markDone, formCancel, addCategory }
 })();
 
 
