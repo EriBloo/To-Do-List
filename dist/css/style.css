@@ -267,7 +267,7 @@ body {
       width: 90%;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      grid-template-rows: 3rem 1fr 1fr 1fr 1fr 3rem;
+      grid-template-rows: 3rem repeat(4, 1fr) 3rem;
       justify-items: center;
       align-items: center; }
       .pop-up-container .pop-up .modify-task h2 {

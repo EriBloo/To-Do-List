@@ -18260,6 +18260,8 @@ function createPopUpElement() {
 function createTaskFormElement() {
 	const taskForm = document.createElement("form");
 	taskForm.classList.add("modify-task");
+	taskForm.setAttribute("method", "post");
+	taskForm.addEventListener("submit", createEventsForButtons.formSubmit);
 
 	const titleH2 = document.createElement("h2");
 	titleH2.textContent = "Create new task";
@@ -18302,11 +18304,12 @@ function createTaskFormElement() {
 	cancelButton.classList.add("form-cancel");
 	cancelButton.setAttribute("type", "button");
 	cancelButton.textContent = "Cancel";
+	cancelButton.addEventListener("click", createEventsForButtons.formCancel);
 	taskForm.appendChild(cancelButton);
 
 	const submitButton = document.createElement("button");
 	submitButton.classList.add("form-submit");
-	submitButton.setAttribute("type", "button");
+	submitButton.setAttribute("type", "submit");
 	submitButton.textContent = "Submit";
 	taskForm.appendChild(submitButton);
 
@@ -18316,7 +18319,7 @@ function createTaskFormElement() {
 function clearContent() {
 	const contentElement = document.querySelector(".content");
 	while (contentElement.childElementCount > 1) {
-		contentElement.removeChild(contentElement.firstChild)
+		contentElement.removeChild(contentElement.firstChild);
 	}
 }
 
@@ -18335,7 +18338,7 @@ const currentMark = ((current) => {
 	const moveCurrent = (newElement) => {
 		_current.classList.remove("current");
 		newElement.classList.add("current");
-		_current = newElement
+		_current = newElement;
 	}
 
 	return { moveCurrent }
@@ -18383,11 +18386,11 @@ const createEventsForButtons = (() => {
 	const addTask = () => {
 		const addTaskElement = document.querySelector(".add-task");
 		addTaskElement.addEventListener("click", () => {
-			const contentElement = document.querySelector(".content");
+			const containerElement = document.querySelector(".container");
 			const popUpElement = createPopUpElement();
 			const taskForm = createTaskFormElement();
 			popUpElement.firstChild.appendChild(taskForm);
-			contentElement.appendChild(popUpElement);
+			containerElement.appendChild(popUpElement);
 		});
 	}
 
@@ -18407,8 +18410,29 @@ const createEventsForButtons = (() => {
 		}
 	}
 
-	return { addTask, removeTask, expandTask }
+	const formCancel = () => {
+		const containerElement = document.querySelector(".container");
+		const popUpElement = document.querySelector(".pop-up-container");
+		containerElement.removeChild(popUpElement);
+	}
+
+	const formSubmit = (e) => {
+		e.preventDefault();
+		const inputTitle = e.target.querySelector(".form-title");
+		const inputDate = e.target.querySelector(".form-date");
+		const inputDescription = e.target.querySelector(".form-description");
+		const inputCategory = e.target.querySelector(".form-category");
+
+		_tasks_js__WEBPACK_IMPORTED_MODULE_1__["TaskStorage"].addNewTask(inputTitle.value, inputDate.value, inputDescription.value, inputCategory.value);
+		clearContent();
+		updateContent(_tasks_js__WEBPACK_IMPORTED_MODULE_1__["CurrentTasks"].getCurrentTasks());
+
+		formCancel();
+	}
+
+	return { addTask, removeTask, expandTask, formCancel, formSubmit }
 })();
+
 
 
 
@@ -18436,6 +18460,7 @@ _dom_js__WEBPACK_IMPORTED_MODULE_1__["createEvents"].allTasks(document.querySele
 document.querySelector(".today").click();
 
 _dom_js__WEBPACK_IMPORTED_MODULE_1__["createEventsForButtons"].addTask();
+
 
 /***/ }),
 
@@ -18579,6 +18604,7 @@ const CurrentTasks = (() => {
 	return { getCurrentTasks, setCurrentTasks }
 	
 })();
+
 
 
 
