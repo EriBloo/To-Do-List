@@ -24,22 +24,6 @@ function createTaskElement(task) {
 	titleH3.textContent = task.getTitle();
 	taskDiv.appendChild(titleH3);
 
-	const arrowUpSpan = document.createElement("span");
-	arrowUpSpan.classList.add("arrow-up");
-	const arrowUpIcon = document.createElement("i");
-	arrowUpIcon.classList.add("fas");
-	arrowUpIcon.classList.add("fa-caret-up");
-	arrowUpSpan.appendChild(arrowUpIcon);
-	taskDiv.appendChild(arrowUpSpan);
-
-	const arrowDownSpan = document.createElement("span");
-	arrowDownSpan.classList.add("arrow-down");
-	const arrowDownIcon = document.createElement("i");
-	arrowDownIcon.classList.add("fas");
-	arrowDownIcon.classList.add("fa-caret-down");
-	arrowDownSpan.appendChild(arrowDownIcon);
-	taskDiv.appendChild(arrowDownSpan);
-
 	const deleteSpan = document.createElement("span");
 	deleteSpan.classList.add("delete");
 	deleteSpan.addEventListener("click", createEventsForButtons.removeTask);
@@ -48,6 +32,20 @@ function createTaskElement(task) {
 	deleteIcon.classList.add("fa-plus");
 	deleteSpan.appendChild(deleteIcon);
 	taskDiv.appendChild(deleteSpan);
+
+	const importantSpan = document.createElement("span");
+	importantSpan.classList.add("important");
+	importantSpan.addEventListener("click", createEventsForButtons.markImportant)
+	const importantIcon = document.createElement("i");
+	if (task.getImportant()) {
+		importantIcon.classList.add("fas")
+	}
+	else {
+		importantIcon.classList.add("far");
+	}
+	importantIcon.classList.add("fa-star");
+	importantSpan.appendChild(importantIcon);
+	taskDiv.appendChild(importantSpan);
 
 	const descH4 = document.createElement("h4");
 	descH4.classList.add("description");
@@ -164,7 +162,13 @@ function updateContent(tasks) {
 	const addTaskElement = document.querySelector(".add-task");
 
 	for (let task of tasks) {
-		contentElement.insertBefore(createTaskElement(task), addTaskElement);
+		const taskElement = createTaskElement(task);
+		if (task.getImportant()) {
+			contentElement.insertBefore(taskElement, contentElement.firstChild)
+		}
+		else {
+			contentElement.insertBefore(taskElement, addTaskElement);
+		}
 	}
 }
 
@@ -297,8 +301,11 @@ const createEventsForButtons = (() => {
 	}
 
 	const markDone = (e) => {
-		e.target.parentNode.classList.toggle("done");
-		if (e.target.parentNode.classList.contains("done")) {
+		const id = e.target.parentNode.getAttribute("data");
+		const task = TaskStorage.getTaskById(id);
+		TaskStorage.getTaskById(id).toggleFinished();
+
+		if (task.getFinished()) {
 			e.target.firstChild.classList.remove("fa-circle");
 			e.target.firstChild.classList.add("fa-check-circle");
 		}
@@ -306,8 +313,25 @@ const createEventsForButtons = (() => {
 			e.target.firstChild.classList.remove("fa-check-circle");
 			e.target.firstChild.classList.add("fa-circle");
 		}
+		e.target.parentNode.classList.toggle("done");
+	}
+
+	const markImportant = (e) => {
 		const id = e.target.parentNode.getAttribute("data");
-		TaskStorage.getTaskById(id).toggleFinished();
+		const task = TaskStorage.getTaskById(id);
+		TaskStorage.getTaskById(id).toggleImportant();
+
+		if (task.getImportant()) {
+			e.target.firstChild.classList.remove("far")
+			e.target.firstChild.classList.add("fas")
+		}
+		else {
+			e.target.firstChild.classList.remove("fas")
+			e.target.firstChild.classList.add("far")
+		}
+
+		clearContent();
+		updateContent(CurrentTasks.getCurrentTasks());
 	}
 
 	const formCancel = () => {
@@ -376,7 +400,7 @@ const createEventsForButtons = (() => {
 		});
 	}
 
-	return { addTask, removeTask, expandTask, editTask, markDone, formCancel, addCategory }
+	return { addTask, removeTask, expandTask, editTask, markDone, markImportant, formCancel, addCategory }
 })();
 
 export { createEvents, createEventsForButtons }

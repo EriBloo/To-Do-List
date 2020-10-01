@@ -15,11 +15,16 @@ const Task = (title, dueDate, id, description = "", category = "") => {
 	const creationDate = new Date();
 	const getCreationDate = () => creationDate;
 
-	let finished = false;
-	const toggleFinished = () => finished = !finished;
-	const getFinished = () => finished;
+	let _finished = false;
+	const toggleFinished = () => _finished = !_finished;
+	const getFinished = () => _finished;
 
-	return { getTitle, setTitle, getDescription, setDescription, getCategory, setCategory, getDueDate, setDueDate, getId, setId, getCreationDate, toggleFinished, getFinished }
+	let _important = false;
+	const toggleImportant = () => _important = !_important;
+	const getImportant = () => _important;
+
+	return { getTitle, setTitle, getDescription, setDescription, getCategory, setCategory, getDueDate, 
+		setDueDate, getId, setId, getCreationDate, toggleFinished, getFinished, toggleImportant, getImportant }
 }
 
 const Emitter = (() => {
