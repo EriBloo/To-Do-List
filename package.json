@@ -25,10 +25,12 @@
   },
   "homepage": "https://github.com/EriBloo/To-Do-List#readme",
   "devDependencies": {
+    "prettier": "2.1.2",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
-    "date-fns": "^2.16.1"
+    "date-fns": "^2.16.1",
+    "eslint": "^7.10.0"
   }
 }
