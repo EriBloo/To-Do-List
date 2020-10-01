@@ -37,12 +37,7 @@ function createTaskElement(task) {
 	importantSpan.classList.add("important");
 	importantSpan.addEventListener("click", createEventsForButtons.markImportant)
 	const importantIcon = document.createElement("i");
-	if (task.getImportant()) {
-		importantIcon.classList.add("fas")
-	}
-	else {
-		importantIcon.classList.add("far");
-	}
+	importantIcon.classList.add(task.getImportant() ? "fas" : "far")
 	importantIcon.classList.add("fa-star");
 	importantSpan.appendChild(importantIcon);
 	taskDiv.appendChild(importantSpan);
