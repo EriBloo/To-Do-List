@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { TaskStorage, CurrentTasks } from './tasks.js';
+import { TaskStorage, CurrentTasks } from './tasks';
 
 function createTaskElement(task) {
   const taskDiv = document.createElement('div');
@@ -60,9 +60,7 @@ function createTaskElement(task) {
     const categoryIcon = document.createElement('i');
     categoryIcon.classList.add('fas');
     categoryIcon.classList.add('fa-circle');
-    categoryIcon.style['color'] = getColorfromValue(
-      getCharSum(task.getCategory())
-    );
+    categoryIcon.style.color = getColorfromValue(getCharSum(task.getCategory()));
     categoryDiv.appendChild(categoryIcon);
     const categoryH3 = document.createElement('h3');
     categoryH3.textContent = task.getCategory();
@@ -72,10 +70,7 @@ function createTaskElement(task) {
 
   const createH4 = document.createElement('h4');
   createH4.classList.add('created');
-  createH4.textContent = `Created: ${format(
-    task.getCreationDate(),
-    'd MMMM yyyy'
-  )}`;
+  createH4.textContent = `Created: ${format(task.getCreationDate(), 'd MMMM yyyy')}`;
   taskDiv.appendChild(createH4);
 
   const dueH4 = document.createElement('h4');
@@ -178,14 +173,14 @@ function updateContent(tasks) {
   const contentElement = document.querySelector('.content');
   const addTaskElement = document.querySelector('.add-task');
 
-  for (let task of tasks) {
+  tasks.forEach((task) => {
     const taskElement = createTaskElement(task);
     if (task.getImportant()) {
       contentElement.insertBefore(taskElement, contentElement.firstChild);
     } else {
       contentElement.insertBefore(taskElement, addTaskElement);
     }
-  }
+  });
 }
 
 function createCategoryElement(category) {
@@ -196,7 +191,7 @@ function createCategoryElement(category) {
   const categoryIcon = document.createElement('i');
   categoryIcon.classList.add('fas');
   categoryIcon.classList.add('fa-circle');
-  categoryIcon.style['color'] = getColorfromValue(getCharSum(category));
+  categoryIcon.style.color = getColorfromValue(getCharSum(category));
   categoryDiv.appendChild(categoryIcon);
 
   const categoryH2 = document.createElement('h2');
@@ -228,25 +223,22 @@ function updateCategories(categories) {
   const projectElement = document.querySelector('.by-project');
   const addCategoryElement = document.querySelector('.add-category-wrapper');
 
-  for (let category of categories) {
-    projectElement.insertBefore(
-      createCategoryElement(category),
-      addCategoryElement
-    );
-  }
+  categories.forEach((category) => {
+    projectElement.insertBefore(createCategoryElement(category), addCategoryElement);
+  });
 }
 
 function removeCategoryFromTasks(category) {
   const tasks = TaskStorage.getTasksByCategory(category);
 
-  for (let task of tasks) {
+  tasks.forEach((task) => {
     task.setCategory('');
-  }
+  });
 }
 
 function getCharSum(word) {
   let wordSum = 0;
-  for (let i = 0; i < word.length; i++) {
+  for (let i = 0; i < word.length; i += 1) {
     wordSum += word.charCodeAt(i);
   }
   return wordSum;
@@ -256,26 +248,26 @@ function getColorfromValue(value) {
   return `hsl(${value % 360}, ${(value % 70) + 25}%, ${(value % 10) + 75}%)`;
 }
 
-const currentMark = ((current) => {
-  let _current = current;
+const currentMark = (() => {
+  let current = document.querySelector('.today');
 
   const moveCurrent = (newElement) => {
-    _current.classList.remove('current');
+    current.classList.remove('current');
     newElement.classList.add('current');
-    _current = newElement;
+    current = newElement;
   };
 
   return { moveCurrent };
-})(document.querySelector('.today'));
+})();
 
 const createEvents = (() => {
-  function _updateCurrentProjectTitle(title) {
+  function updateCurrentProjectTitle(title) {
     const currentProjectTitle = document.querySelector('.current-project');
     currentProjectTitle.textContent = title;
   }
   const byDate = (element, date) => {
     element.addEventListener('click', () => {
-      _updateCurrentProjectTitle(element.textContent);
+      updateCurrentProjectTitle(element.textContent);
       CurrentTasks.setCurrentTasks(TaskStorage.getTasksToDate(date));
       clearContent();
       updateContent(CurrentTasks.getCurrentTasks());
@@ -288,7 +280,7 @@ const createEvents = (() => {
       if (e.target !== e.currentTarget) {
         return;
       }
-      _updateCurrentProjectTitle(element.textContent);
+      updateCurrentProjectTitle(element.textContent);
       CurrentTasks.setCurrentTasks(TaskStorage.getTasksByCategory(category));
       clearContent();
       updateContent(CurrentTasks.getCurrentTasks());
@@ -298,7 +290,7 @@ const createEvents = (() => {
 
   const allTasks = (element) => {
     element.addEventListener('click', () => {
-      _updateCurrentProjectTitle(element.textContent);
+      updateCurrentProjectTitle(element.textContent);
       CurrentTasks.setCurrentTasks(TaskStorage.getAllTasks());
       clearContent();
       updateContent(CurrentTasks.getCurrentTasks());
@@ -315,10 +307,7 @@ const createEventsForButtons = (() => {
     addTaskElement.addEventListener('click', () => {
       const containerElement = document.querySelector('.container');
       const popUpElement = createPopUpElement();
-      const taskFormElement = createTaskFormElement(
-        'Create new task',
-        formAddTask
-      );
+      const taskFormElement = createTaskFormElement('Create new task', formAddTask);
       popUpElement.firstChild.appendChild(taskFormElement);
       containerElement.appendChild(popUpElement);
     });
@@ -347,20 +336,12 @@ const createEventsForButtons = (() => {
     const task = TaskStorage.getTaskById(id);
     const containerElement = document.querySelector('.container');
     const popUpElement = createPopUpElement();
-    const taskFormElement = createTaskFormElement(
-      'Edit task',
-      formEditTask.bind(null, id)
-    );
+    const taskFormElement = createTaskFormElement('Edit task', formEditTask.bind(null, id));
 
     taskFormElement.querySelector('.form-title').value = task.getTitle();
-    taskFormElement.querySelector(
-      '.form-description'
-    ).value = task.getDescription();
+    taskFormElement.querySelector('.form-description').value = task.getDescription();
     taskFormElement.querySelector('.form-category').value = task.getCategory();
-    taskFormElement.querySelector('.form-date').value = format(
-      task.getDueDate(),
-      'yyyy-MM-dd'
-    );
+    taskFormElement.querySelector('.form-date').value = format(task.getDueDate(), 'yyyy-MM-dd');
 
     popUpElement.firstChild.appendChild(taskFormElement);
     containerElement.appendChild(popUpElement);
@@ -384,7 +365,7 @@ const createEventsForButtons = (() => {
   const markImportant = (e) => {
     const id = e.target.parentNode.getAttribute('data');
     const task = TaskStorage.getTaskById(id);
-    TaskStorage.getTaskById(id).toggleImportant();
+    task.toggleImportant();
 
     if (task.getImportant()) {
       e.target.firstChild.classList.remove('far');
@@ -415,7 +396,7 @@ const createEventsForButtons = (() => {
       inputTitle.value,
       inputDate.value,
       inputDescription.value,
-      inputCategory.value
+      inputCategory.value,
     );
 
     clearContent();
@@ -439,7 +420,7 @@ const createEventsForButtons = (() => {
       inputTitle.value,
       inputDate.value,
       inputDescription.value,
-      inputCategory.value
+      inputCategory.value,
     );
 
     clearContent();
@@ -451,27 +432,27 @@ const createEventsForButtons = (() => {
     formCancel();
   };
 
-  const addCategory = () => {
-    const categoryButton = document.querySelector(
-      '.add-category-wrapper .fa-plus'
-    );
+  const addCategory = (e) => {
     const categoryInput = document.querySelector('.add-category-wrapper input');
-    categoryButton.addEventListener('click', () => {
-      categoryInput.classList.toggle('active');
-      if (categoryInput.classList.contains('active')) {
-        categoryInput.focus();
-      } else {
-        categoryInput.blur();
+    if (
+      (e.keyCode === 13 && document.activeElement !== categoryInput)
+      || (e.keyCode !== 13 && e.type !== 'click')
+    ) {
+      return;
+    }
+    categoryInput.classList.toggle('active');
+    if (categoryInput.classList.contains('active')) {
+      categoryInput.focus();
+    } else {
+      categoryInput.blur();
 
-        if (categoryInput.value) {
-          TaskStorage.addCategory(categoryInput.value);
-          categoryInput.value = '';
-
-          clearCategories();
-          updateCategories(TaskStorage.getCategories());
-        }
+      if (categoryInput.value) {
+        TaskStorage.addCategory(categoryInput.value);
+        categoryInput.value = '';
+        clearCategories();
+        updateCategories(TaskStorage.getCategories());
       }
-    });
+    }
   };
 
   const removeCategory = (e) => {
