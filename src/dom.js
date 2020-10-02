@@ -6,16 +6,18 @@ function createTaskElement(task) {
   taskDiv.classList.add('task');
   if (task.getFinished()) {
     taskDiv.classList.add('done');
-	}
-	if (task.getExpanded()) {
-		taskDiv.classList.add('expanded');
-	}
+  }
+  if (task.getExpanded()) {
+    taskDiv.classList.add('expanded');
+  }
   taskDiv.setAttribute('data', task.getId());
+  taskDiv.setAttribute('title', 'Expand');
   taskDiv.addEventListener('click', createEventsForButtons.expandTask);
 
   const markSpan = document.createElement('span');
   markSpan.classList.add('mark');
   markSpan.addEventListener('click', createEventsForButtons.markDone);
+  markSpan.setAttribute('title', 'Mark as done');
   const markIcon = document.createElement('i');
   markIcon.classList.add('far');
   markIcon.classList.add(task.getFinished() ? 'fa-check-circle' : 'fa-circle');
@@ -30,6 +32,7 @@ function createTaskElement(task) {
   const deleteSpan = document.createElement('span');
   deleteSpan.classList.add('delete');
   deleteSpan.addEventListener('click', createEventsForButtons.removeTask);
+  deleteSpan.setAttribute('title', 'Remove task');
   const deleteIcon = document.createElement('i');
   deleteIcon.classList.add('fas');
   deleteIcon.classList.add('fa-plus');
@@ -39,6 +42,7 @@ function createTaskElement(task) {
   const importantSpan = document.createElement('span');
   importantSpan.classList.add('important');
   importantSpan.addEventListener('click', createEventsForButtons.markImportant);
+  importantSpan.setAttribute('title', 'Mark as priority');
   const importantIcon = document.createElement('i');
   importantIcon.classList.add(task.getImportant() ? 'fas' : 'far');
   importantIcon.classList.add('fa-star');
@@ -50,10 +54,21 @@ function createTaskElement(task) {
   descH4.textContent = task.getDescription();
   taskDiv.appendChild(descH4);
 
-  const categoryH3 = document.createElement('h3');
-  categoryH3.classList.add('in-category');
-  categoryH3.textContent = task.getCategory();
-  taskDiv.appendChild(categoryH3);
+  const categoryDiv = document.createElement('div');
+  categoryDiv.classList.add('in-category');
+  if (task.getCategory()) {
+    const categoryIcon = document.createElement('i');
+    categoryIcon.classList.add('fas');
+    categoryIcon.classList.add('fa-circle');
+    categoryIcon.style['color'] = getColorfromValue(
+      getCharSum(task.getCategory())
+    );
+    categoryDiv.appendChild(categoryIcon);
+    const categoryH3 = document.createElement('h3');
+    categoryH3.textContent = task.getCategory();
+    categoryDiv.appendChild(categoryH3);
+  }
+  taskDiv.appendChild(categoryDiv);
 
   const createH4 = document.createElement('h4');
   createH4.classList.add('created');
@@ -71,6 +86,7 @@ function createTaskElement(task) {
   const editSpan = document.createElement('span');
   editSpan.classList.add('edit');
   editSpan.addEventListener('click', createEventsForButtons.editTask);
+  editSpan.setAttribute('title', 'Edit task');
   const editIcon = document.createElement('i');
   editIcon.classList.add('fas');
   editIcon.classList.add('fa-pen');
@@ -180,12 +196,23 @@ function createCategoryElement(category) {
   const categoryIcon = document.createElement('i');
   categoryIcon.classList.add('fas');
   categoryIcon.classList.add('fa-circle');
+  categoryIcon.style['color'] = getColorfromValue(getCharSum(category));
   categoryDiv.appendChild(categoryIcon);
 
   const categoryH2 = document.createElement('h2');
   categoryH2.classList.add('other');
   categoryH2.textContent = category;
   categoryDiv.appendChild(categoryH2);
+
+  const removeSpan = document.createElement('span');
+  removeSpan.classList.add('remove-category');
+  removeSpan.addEventListener('click', createEventsForButtons.removeCategory);
+  removeSpan.setAttribute('title', 'Remove category');
+  const removeIcon = document.createElement('i');
+  removeIcon.classList.add('fas');
+  removeIcon.classList.add('fa-minus');
+  removeSpan.appendChild(removeIcon);
+  categoryDiv.appendChild(removeSpan);
 
   return categoryDiv;
 }
@@ -207,6 +234,26 @@ function updateCategories(categories) {
       addCategoryElement
     );
   }
+}
+
+function removeCategoryFromTasks(category) {
+  const tasks = TaskStorage.getTasksByCategory(category);
+
+  for (let task of tasks) {
+    task.setCategory('');
+  }
+}
+
+function getCharSum(word) {
+  let wordSum = 0;
+  for (let i = 0; i < word.length; i++) {
+    wordSum += word.charCodeAt(i);
+  }
+  return wordSum;
+}
+
+function getColorfromValue(value) {
+  return `hsl(${value % 360}, ${(value % 70) + 25}%, ${(value % 10) + 75}%)`;
 }
 
 const currentMark = ((current) => {
@@ -237,7 +284,10 @@ const createEvents = (() => {
   };
 
   const byCategory = (element, category) => {
-    element.addEventListener('click', () => {
+    element.addEventListener('click', (e) => {
+      if (e.target !== e.currentTarget) {
+        return;
+      }
       _updateCurrentProjectTitle(element.textContent);
       CurrentTasks.setCurrentTasks(TaskStorage.getTasksByCategory(category));
       clearContent();
@@ -286,9 +336,9 @@ const createEventsForButtons = (() => {
 
   const expandTask = (e) => {
     if (e.target === e.currentTarget) {
-			const id = e.target.getAttribute("data");
-			e.target.classList.toggle('expanded');
-			TaskStorage.getTaskById(id).toggleExpanded();
+      const id = e.target.getAttribute('data');
+      e.target.classList.toggle('expanded');
+      TaskStorage.getTaskById(id).toggleExpanded();
     }
   };
 
@@ -409,21 +459,38 @@ const createEventsForButtons = (() => {
     categoryButton.addEventListener('click', () => {
       categoryInput.classList.toggle('active');
       if (categoryInput.classList.contains('active')) {
-        categoryInput.style['opacity'] = 1;
-        categoryInput.style['pointer-events'] = 'all';
         categoryInput.focus();
       } else {
-        categoryInput.style['opacity'] = 0;
-        categoryInput.style['pointer-events'] = 'none';
         categoryInput.blur();
+
         if (categoryInput.value) {
           TaskStorage.addCategory(categoryInput.value);
           categoryInput.value = '';
+
           clearCategories();
           updateCategories(TaskStorage.getCategories());
         }
       }
     });
+  };
+
+  const removeCategory = (e) => {
+    const category = e.target.parentNode.querySelector('.other').textContent;
+    const current = document.querySelector('.current-project');
+    const today = document.querySelector('.today');
+
+    TaskStorage.removeCategory(category);
+    removeCategoryFromTasks(category);
+
+    if (current.textContent === category) {
+      today.click();
+    } else {
+      clearContent();
+      updateContent(CurrentTasks.getCurrentTasks());
+    }
+
+    clearCategories();
+    updateCategories(TaskStorage.getCategories());
   };
 
   return {
@@ -435,7 +502,15 @@ const createEventsForButtons = (() => {
     markImportant,
     formCancel,
     addCategory,
+    removeCategory,
   };
 })();
 
-export { createEvents, createEventsForButtons };
+export {
+  clearContent,
+  updateContent,
+  clearCategories,
+  updateCategories,
+  createEvents,
+  createEventsForButtons,
+};

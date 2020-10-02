@@ -21,11 +21,11 @@ const Task = (title, dueDate, id, description = '', category = '') => {
 
   let _important = false;
   const toggleImportant = () => (_important = !_important);
-	const getImportant = () => _important;
-	
-	let _expanded = false;
+  const getImportant = () => _important;
+
+  let _expanded = false;
   const toggleExpanded = () => (_expanded = !_expanded);
-	const getExpanded = () => _expanded;
+  const getExpanded = () => _expanded;
 
   return {
     getTitle,
@@ -42,9 +42,9 @@ const Task = (title, dueDate, id, description = '', category = '') => {
     toggleFinished,
     getFinished,
     toggleImportant,
-		getImportant,
-		toggleExpanded,
-		getExpanded,
+    getImportant,
+    toggleExpanded,
+    getExpanded,
   };
 };
 

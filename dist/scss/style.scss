@@ -104,7 +104,7 @@ body {
         .fa-circle {
           font-size: 1.5rem;
           margin-left: 0.5rem;
-          color: #709fb0;
+          //color: #709fb0;
         }
 
         .other {
@@ -117,6 +117,26 @@ body {
         .other::first-letter {
           text-transform: uppercase;
         }
+
+        .remove-category {
+          margin-right: 3rem;
+          margin-left: auto;
+          font-size: 1.2rem;
+          color: #ac4b1c;
+          opacity: 0;
+
+          .fa-minus {
+            pointer-events: none;
+          }
+        }
+      }
+
+      .category-wrapper:hover > .remove-category {
+        opacity: 0.3;
+      }
+
+      .category-wrapper:hover > .remove-category:hover {
+        opacity: 1;
       }
 
       .add-category-wrapper {
@@ -150,6 +170,8 @@ body {
 
         .active {
           animation: width-grow 0.7s ease forwards;
+          opacity: 1;
+          pointer-events: all;
         }
       }
     }
@@ -221,11 +243,11 @@ body {
       margin: 0 0 0 1rem;
       color: #333333;
       display: grid;
-      grid-template-columns: 2rem 1fr 8rem 4rem 4rem;
+      grid-template-columns: 2rem 3fr 1fr 4rem 4rem;
       grid-template-rows: 2rem 2rem 2rem 2rem;
       justify-items: center;
       align-items: center;
-			transition: height .8s ease;
+      transition: height 0.8s ease;
       overflow: hidden;
       cursor: pointer;
 
@@ -298,15 +320,24 @@ body {
 
       .in-category {
         grid-column: -3/-4;
-        grid-row: 1/2;
-        justify-self: start;
-        align-self: end;
-        font-size: 1.5rem;
-        font-weight: 100;
-      }
+        grid-row: 1/3;
+        justify-self: flex-start;
+        display: flex;
+        align-items: center;
 
-      .in-category::first-letter {
-        text-transform: uppercase;
+        .fa-circle {
+          font-size: 1.3rem;
+        }
+
+        h3 {
+          font-size: 1.5rem;
+          font-weight: 100;
+          margin-left: 0.5rem;
+        }
+
+        h3::first-letter {
+          text-transform: uppercase;
+        }
       }
 
       .edit {
@@ -362,12 +393,12 @@ body {
     }
 
     .done {
-			color: #888888;
-		}
-		
-		.done > .important {
-			opacity: .3;
-		}
+      color: #888888;
+    }
+
+    .done > .important {
+      opacity: 0.3;
+    }
 
     .add-task {
       width: fit-content;
