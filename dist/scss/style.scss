@@ -104,7 +104,6 @@ body {
         .fa-circle {
           font-size: 1.5rem;
           margin-left: 0.5rem;
-          //color: #709fb0;
         }
 
         .other {
@@ -206,7 +205,7 @@ body {
     grid-row: 1/2;
     background-color: #709fb0;
     display: grid;
-    grid-template-columns: minmax(20rem, 25%) 1fr;
+    grid-template-columns: minmax(20rem, 25%) 1fr auto;
     align-items: center;
 
     .site-title {
@@ -226,6 +225,79 @@ body {
     .current-project::first-letter {
       text-transform: uppercase;
     }
+
+    .log-in-container {
+      .log-in {
+        display: flex;
+        align-items: center;
+
+        input {
+          height: 2rem;
+          background-color: #f4f4f4;
+          padding-left: 0.5rem;
+          margin-right: 0.5rem;
+          border: solid 1px #888888;
+          border-radius: 0.2rem;
+          outline: none;
+        }
+
+        .error {
+          border-width: 2px;
+          border-color: #ac4b1c;
+        }
+
+        button {
+          width: 5rem;
+          height: 2.5rem;
+          margin-right: 0.5rem;
+          font-weight: bold;
+          color: #666666;
+          background-color: #eeeeee;
+          outline: none;
+          border: solid 1px #888888;
+          border-radius: 0.2rem;
+          cursor: pointer;
+        }
+
+        button:hover {
+          filter: brightness(80%);
+          background-color: #eeeeee;
+        }
+
+        .log-in-btn {
+          color: #709fb0;
+        }
+      }
+
+      .welcome {
+        display: flex;
+        align-items: center;
+
+        .welcome-text {
+          font-size: 1.3rem;
+          color: #f4f4f4;
+          margin-right: 0.5rem;
+        }
+
+        button {
+          width: 5rem;
+          height: 2.5rem;
+          margin-right: 0.5rem;
+          font-weight: bold;
+          color: #666666;
+          background-color: #eeeeee;
+          outline: none;
+          border: solid 1px #888888;
+          border-radius: 0.2rem;
+          cursor: pointer;
+        }
+
+        button:hover {
+          filter: brightness(80%);
+          background-color: #eeeeee;
+        }
+      }
+    }
   }
 
   .content {
@@ -237,6 +309,7 @@ body {
     margin-top: 1rem;
 
     .task {
+      min-height: 4rem;
       height: 4rem;
       width: calc(100% - 2rem);
       border-bottom: solid #dddddd 1px;
@@ -247,7 +320,7 @@ body {
       grid-template-rows: 2rem 2rem 2rem 2rem;
       justify-items: center;
       align-items: center;
-      transition: height 0.8s ease;
+      transition: min-height 0.8s ease;
       overflow: hidden;
       cursor: pointer;
 
@@ -389,7 +462,7 @@ body {
     }
 
     .expanded {
-      height: 8rem;
+      min-height: 8rem;
     }
 
     .done {
@@ -430,6 +503,65 @@ body {
         font-weight: 400;
       }
     }
+  }
+
+  .sign-in-container {
+    position: fixed;
+    top: 5rem;
+    right: 2rem;
+    background-color: #709fb0;
+    border-radius: 0.5rem;
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+
+    .sign-in {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      input {
+        height: 2rem;
+        width: 15rem;
+        background-color: #f4f4f4;
+        padding-left: 0.5rem;
+        margin-right: 0.5rem;
+        border: solid 1px #888888;
+        border-radius: 0.2rem;
+        outline: none;
+      }
+
+      input + input {
+        margin-top: 0.2rem;
+      }
+
+      .error {
+        border-width: 2px;
+        border-color: #ac4b1c;
+      }
+
+      button {
+        margin-top: 0.2rem;
+        width: 5rem;
+        height: 2.5rem;
+        margin-right: 0.5rem;
+        font-weight: bold;
+        color: #666666;
+        background-color: #eeeeee;
+        outline: none;
+        border: solid 1px #888888;
+        border-radius: 0.2rem;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .visible {
+    opacity: 1;
+    pointer-events: all;
   }
 }
 

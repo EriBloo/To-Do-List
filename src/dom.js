@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { TaskStorage, CurrentTasks } from './tasks';
+import { Emitter, TaskStorage, CurrentTasks } from './tasks';
 
 function createTaskElement(task) {
   const taskDiv = document.createElement('div');
@@ -192,11 +192,13 @@ function createCategoryElement(category) {
   categoryIcon.classList.add('fas');
   categoryIcon.classList.add('fa-circle');
   categoryIcon.style.color = getColorfromValue(getCharSum(category));
+  createEvents.byCategory(categoryDiv, category);
   categoryDiv.appendChild(categoryIcon);
 
   const categoryH2 = document.createElement('h2');
   categoryH2.classList.add('other');
   categoryH2.textContent = category;
+  createEvents.byCategory(categoryDiv, category);
   categoryDiv.appendChild(categoryH2);
 
   const removeSpan = document.createElement('span');
@@ -328,6 +330,7 @@ const createEventsForButtons = (() => {
       const id = e.target.getAttribute('data');
       e.target.classList.toggle('expanded');
       TaskStorage.getTaskById(id).toggleExpanded();
+      Emitter.emit('changeTasks');
     }
   };
 
@@ -351,6 +354,7 @@ const createEventsForButtons = (() => {
     const id = e.target.parentNode.getAttribute('data');
     const task = TaskStorage.getTaskById(id);
     TaskStorage.getTaskById(id).toggleFinished();
+    Emitter.emit('changeTasks');
 
     if (task.getFinished()) {
       e.target.firstChild.classList.remove('fa-circle');
@@ -366,6 +370,7 @@ const createEventsForButtons = (() => {
     const id = e.target.parentNode.getAttribute('data');
     const task = TaskStorage.getTaskById(id);
     task.toggleImportant();
+    Emitter.emit('changeTasks');
 
     if (task.getImportant()) {
       e.target.firstChild.classList.remove('far');
@@ -457,13 +462,13 @@ const createEventsForButtons = (() => {
 
   const removeCategory = (e) => {
     const category = e.target.parentNode.querySelector('.other').textContent;
-    const current = document.querySelector('.current-project');
+    const current = document.querySelector('.current-project').textContent;
     const today = document.querySelector('.today');
 
     TaskStorage.removeCategory(category);
     removeCategoryFromTasks(category);
 
-    if (current.textContent === category) {
+    if (current === category) {
       today.click();
     } else {
       clearContent();

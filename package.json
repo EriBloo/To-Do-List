@@ -36,6 +36,7 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
-    "date-fns": "^2.16.1"
+    "date-fns": "^2.16.1",
+    "firebase": "^7.22.0"
   }
 }

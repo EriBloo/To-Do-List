@@ -1,31 +1,75 @@
 import { isBefore } from 'date-fns';
 
-const Task = (title, dueDate, id, description = '', category = '') => {
+const Task = (
+  taskTitle,
+  taskDueDate,
+  taskId,
+  taskDescription = '',
+  taskCategory = '',
+  taskCreationDate = new Date(),
+  taskFinished = false,
+  taskImportant = false,
+  taskExpanded = false,
+) => {
+  let title = taskTitle;
+  let dueDate = taskDueDate;
+  let id = taskId;
+  let description = taskDescription;
+  let category = taskCategory;
+  let creationDate = taskCreationDate;
+  let finished = taskFinished;
+  let important = taskImportant;
+  let expanded = taskExpanded;
+
   const getTitle = () => title;
-  const setTitle = (newTitle) => (title = newTitle);
+  const setTitle = (newTitle) => {
+    title = newTitle;
+  };
   const getDescription = () => description;
-  const setDescription = (newDescription) => (description = newDescription);
+  const setDescription = (newDescription) => {
+    description = newDescription;
+  };
   const getCategory = () => category;
-  const setCategory = (newCategory) => (category = newCategory);
+  const setCategory = (newCategory) => {
+    category = newCategory;
+  };
   const getDueDate = () => dueDate;
-  const setDueDate = (newDate) => (dueDate = newDate);
+  const setDueDate = (newDate) => {
+    dueDate = newDate;
+  };
   const getId = () => id;
-  const setId = (newId) => (id = newId);
+  const setId = (newId) => {
+    id = newId;
+  };
 
-  const creationDate = new Date();
   const getCreationDate = () => creationDate;
+  const setCreationDate = (newCreationDate) => {
+    creationDate = newCreationDate;
+  };
 
-  let finished = false;
-  const toggleFinished = () => (finished = !finished);
+  const toggleFinished = () => {
+    finished = !finished;
+  };
   const getFinished = () => finished;
+  const setFinished = (bool) => {
+    finished = bool;
+  };
 
-  let important = false;
-  const toggleImportant = () => (important = !important);
+  const toggleImportant = () => {
+    important = !important;
+  };
   const getImportant = () => important;
+  const setImportant = (bool) => {
+    important = bool;
+  };
 
-  let expanded = false;
-  const toggleExpanded = () => (expanded = !expanded);
+  const toggleExpanded = () => {
+    expanded = !expanded;
+  };
   const getExpanded = () => expanded;
+  const setExpanded = (bool) => {
+    expanded = bool;
+  };
 
   return {
     getTitle,
@@ -39,12 +83,16 @@ const Task = (title, dueDate, id, description = '', category = '') => {
     getId,
     setId,
     getCreationDate,
+    setCreationDate,
     toggleFinished,
     getFinished,
+    setFinished,
     toggleImportant,
     getImportant,
+    setImportant,
     toggleExpanded,
     getExpanded,
+    setExpanded,
   };
 };
 
@@ -102,13 +150,26 @@ const TaskStorage = (() => {
     });
     return taskToReturn;
   };
-  const addNewTask = (title, dueDate, description = '', category = '') => {
+  const addNewTask = (
+    title,
+    dueDate,
+    description = '',
+    category = '',
+    creationDate = new Date(),
+    finished = false,
+    important = false,
+    expanded = false,
+  ) => {
     const task = Task(
       title,
       new Date(dueDate),
       currentId,
       description,
       category.trim().toLowerCase(),
+      new Date(creationDate),
+      finished,
+      important,
+      expanded,
     );
     if (category) {
       addCategory(category);
@@ -130,6 +191,7 @@ const TaskStorage = (() => {
     if (newCategory) {
       addCategory(newCategory);
     }
+    Emitter.emit('changeTasks');
   };
   const getAllTasks = () => {
     Emitter.emit('getTasks', getAllTasks);
@@ -162,9 +224,9 @@ const TaskStorage = (() => {
     addCategory,
     getCategories,
     removeCategory,
-    editTask,
     addNewTask,
     removeTask,
+    editTask,
     getAllTasks,
     getTasksToDate,
     getTaskById,
@@ -184,7 +246,9 @@ const CurrentTasks = (() => {
     lastData = d;
   };
   const updateCurrent = () => {
-    setCurrentTasks(lastFunction(lastData));
+    if (lastFunction) {
+      setCurrentTasks(lastFunction(lastData));
+    }
   };
 
   Emitter.on('getTasks', saveLast);
@@ -193,4 +257,6 @@ const CurrentTasks = (() => {
   return { getCurrentTasks, setCurrentTasks };
 })();
 
-export { TaskStorage, CurrentTasks };
+export {
+  Task, Emitter, TaskStorage, CurrentTasks,
+};
