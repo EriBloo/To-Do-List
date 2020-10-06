@@ -12,9 +12,7 @@ import {
   createEvents,
   createEventsForButtons,
 } from './dom';
-import {
-  Emitter, CurrentTasks, TaskStorage, Task,
-} from './tasks';
+import { Emitter, CurrentTasks, TaskStorage } from './tasks';
 import { firebaseConfig } from './firebase-config/config';
 
 firebase.initializeApp(firebaseConfig);
@@ -186,47 +184,96 @@ function taskToJSON(task) {
     important: task.getImportant(),
     expanded: task.getExpanded(),
   };
-  return JSON.stringify(taskToReturn);
+  return taskToReturn;
 }
 
-function JSONToTask(jsonStr) {
-  const taskParse = JSON.parse(jsonStr);
+function JSONToTask(json) {
   const taskArray = [
-    taskParse.title,
-    taskParse.dueDate,
-    taskParse.description,
-    taskParse.category,
-    taskParse.creationDate,
-    taskParse.finished,
-    taskParse.important,
-    taskParse.expanded,
+    json.title,
+    json.dueDate,
+    json.description,
+    json.category,
+    json.creationDate,
+    json.finished,
+    json.important,
+    json.expanded,
   ];
 
   return taskArray;
 }
 
 function useLocalStorage() {
+  let initialized = true;
+
   function storeTasks() {
     const tasksToStore = [];
     TaskStorage.getAllTasks().forEach((task) => {
-      tasksToStore.push(taskToJSON(task));
+      tasksToStore.push(JSON.stringify(taskToJSON(task)));
     });
     localStorage.setItem('taskStorage', JSON.stringify(tasksToStore));
   }
 
   function loadTasks() {
     JSON.parse(localStorage.getItem('taskStorage')).forEach((task) => {
-      TaskStorage.addNewTask(...JSONToTask(task));
+      TaskStorage.addNewTask(...JSONToTask(JSON.parse(task)));
     });
     localStorage.removeItem('localStorage');
-    updatePage();
+  }
+
+  function clear() {
+    localStorage.removeItem('taskStorage');
+    Emitter.remove('changeTasks', storeTasks);
+    initialized = false;
   }
 
   if (localStorage.getItem('taskStorage')) {
     loadTasks();
   }
+  updatePage();
 
   Emitter.on('changeTasks', storeTasks);
+
+  useLocalStorage.clear = clear;
+  useLocalStorage.initialized = initialized;
+}
+
+function useDatabase() {
+  const userId = auth.currentUser.uid;
+  let initialized = true;
+
+  function storeTasks() {
+    const taskArray = [];
+    const databaseTasksRef = database.ref(`users/${userId}/tasks`);
+    TaskStorage.getAllTasks().forEach((task) => {
+      taskArray.push(taskToJSON(task));
+    });
+    databaseTasksRef.set(taskArray);
+  }
+
+  function loadTasks() {
+    const userTasks = database.ref(`users/${userId}/tasks`);
+
+    userTasks.once('value').then((snapshot) => {
+      Emitter.emit('changeTasks');
+      snapshot.forEach((task) => {
+        TaskStorage.addNewTask(...JSONToTask(task.val()));
+      });
+      updatePage();
+    });
+  }
+
+  function clear() {
+    Emitter.remove('changeTasks', storeTasks);
+    TaskStorage.removeAllTasks();
+    initialized = false;
+  }
+
+  loadTasks();
+
+  Emitter.on('changeTasks', storeTasks);
+
+  useDatabase.clear = clear;
+  useDatabase.initialized = initialized;
 }
 
 function chooseAction() {
@@ -234,10 +281,16 @@ function chooseAction() {
   const logInContainer = document.querySelector('.log-in-container');
 
   if (user) {
+    if (useLocalStorage.initialized) {
+      useLocalStorage.clear();
+    }
     clearContainer();
     logInContainer.appendChild(createWelcomeText(user.displayName));
-    console.log('database');
+    useDatabase();
   } else {
+    if (useDatabase.initialized) {
+      useDatabase.clear();
+    }
     clearContainer();
     logInContainer.appendChild(createLogInFormElement());
     useLocalStorage();

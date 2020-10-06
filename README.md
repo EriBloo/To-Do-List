@@ -4,6 +4,5 @@ Simple and clean look without bloat.
 
 # To-Do
 Clean up code\
-Add save feature (firebase)\
 Add quick notes\
 Make site responsive

@@ -182,6 +182,9 @@ const TaskStorage = (() => {
     taskStore = taskStore.filter((task) => task.getId() !== parseInt(id, 10));
     Emitter.emit('changeTasks');
   };
+  const removeAllTasks = () => {
+    taskStore = [];
+  };
   const editTask = (id, newTitle, newDueDate, newDescription, newCategory) => {
     const task = getTaskById(id);
     task.setTitle(newTitle);
@@ -226,6 +229,7 @@ const TaskStorage = (() => {
     removeCategory,
     addNewTask,
     removeTask,
+    removeAllTasks,
     editTask,
     getAllTasks,
     getTasksToDate,
