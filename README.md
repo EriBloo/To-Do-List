@@ -6,3 +6,7 @@ Simple and clean look without bloat.
 Clean up code\
 Add quick notes\
 Make site responsive
+
+# Known bugs
+After logging out categories doesn't disapear\
+Category text and icon still doesnt react to clicks
