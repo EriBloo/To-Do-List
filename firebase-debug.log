@@ -1,0 +1,33 @@
+[debug] [2020-10-06T09:42:40.131Z] ----------------------------------------------------------------------
+[debug] [2020-10-06T09:42:40.132Z] Command:       /home/lukasz/.nvm/versions/node/v14.8.0/bin/node /home/lukasz/.nvm/versions/node/v14.8.0/bin/firebase deploy
+[debug] [2020-10-06T09:42:40.132Z] CLI Version:   8.11.2
+[debug] [2020-10-06T09:42:40.132Z] Platform:      linux
+[debug] [2020-10-06T09:42:40.132Z] Node Version:  v14.8.0
+[debug] [2020-10-06T09:42:40.133Z] Time:          Tue Oct 06 2020 11:42:40 GMT+0200 (czas środkowoeuropejski letni)
+[debug] [2020-10-06T09:42:40.133Z] ----------------------------------------------------------------------
+[debug] [2020-10-06T09:42:40.133Z] 
+[debug] [2020-10-06T09:42:40.137Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-10-06T09:42:40.138Z] > authorizing via signed-in user
+[debug] [2020-10-06T09:42:40.138Z] [iam] checking project simply-do-56272 for permissions ["firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]
+[debug] [2020-10-06T09:42:40.140Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/simply-do-56272:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]}
+[debug] [2020-10-06T09:42:41.085Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Tue, 06 Oct 2020 09:42:40 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=700","alt-svc":"h3-Q050=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-10-06T09:42:41.088Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/simply-do-56272  
+ 
+[debug] [2020-10-06T09:42:41.457Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Tue, 06 Oct 2020 09:42:41 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-Q050=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] 
+[info] === Deploying to 'simply-do-56272'...
+[info] 
+[info] i  deploying database, hosting 
+[info] i  database: checking rules syntax... 
+[debug] [2020-10-06T09:42:41.467Z] >>> HTTP REQUEST PUT https://simply-do-56272.firebaseio.com/.settings/rules.json?dryRun=true  
+ {
+  "rules": {
+    "users": {
+    	"$uid": {
+        	".read": "auth.uid == $uid",
+        	".write": "auth.uid == $uid"
+    	}
+  	}
+	}
+}

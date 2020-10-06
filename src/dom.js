@@ -60,7 +60,7 @@ function createTaskElement(task) {
     const categoryIcon = document.createElement('i');
     categoryIcon.classList.add('fas');
     categoryIcon.classList.add('fa-circle');
-    categoryIcon.style.color = getColorfromValue(getCharSum(task.getCategory()));
+    categoryIcon.style.color = getColorfromValue(getCharSum(task.getCategory().toLowerCase()));
     categoryDiv.appendChild(categoryIcon);
     const categoryH3 = document.createElement('h3');
     categoryH3.textContent = task.getCategory();
@@ -192,13 +192,11 @@ function createCategoryElement(category) {
   categoryIcon.classList.add('fas');
   categoryIcon.classList.add('fa-circle');
   categoryIcon.style.color = getColorfromValue(getCharSum(category));
-  createEvents.byCategory(categoryDiv, category);
   categoryDiv.appendChild(categoryIcon);
 
   const categoryH2 = document.createElement('h2');
   categoryH2.classList.add('other');
   categoryH2.textContent = category;
-  createEvents.byCategory(categoryDiv, category);
   categoryDiv.appendChild(categoryH2);
 
   const removeSpan = document.createElement('span');
@@ -279,9 +277,6 @@ const createEvents = (() => {
 
   const byCategory = (element, category) => {
     element.addEventListener('click', (e) => {
-      if (e.target !== e.currentTarget) {
-        return;
-      }
       updateCurrentProjectTitle(element.textContent);
       CurrentTasks.setCurrentTasks(TaskStorage.getTasksByCategory(category));
       clearContent();
@@ -461,6 +456,7 @@ const createEventsForButtons = (() => {
   };
 
   const removeCategory = (e) => {
+    e.stopPropagation();
     const category = e.target.parentNode.querySelector('.other').textContent;
     const current = document.querySelector('.current-project').textContent;
     const today = document.querySelector('.today');
