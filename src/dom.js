@@ -234,6 +234,8 @@ function removeCategoryFromTasks(category) {
   tasks.forEach((task) => {
     task.setCategory('');
   });
+
+  Emitter.emit('changeTasks');
 }
 
 function getCharSum(word) {
@@ -272,6 +274,7 @@ const createEvents = (() => {
       clearContent();
       updateContent(CurrentTasks.getCurrentTasks());
       currentMark.moveCurrent(element);
+      Emitter.emit('getTasks', TaskStorage.getTasksToDate, date);
     });
   };
 
@@ -282,6 +285,7 @@ const createEvents = (() => {
       clearContent();
       updateContent(CurrentTasks.getCurrentTasks());
       currentMark.moveCurrent(element);
+      Emitter.emit('getTasks', TaskStorage.getTasksByCategory, category.toLowerCase());
     });
   };
 
@@ -292,6 +296,7 @@ const createEvents = (() => {
       clearContent();
       updateContent(CurrentTasks.getCurrentTasks());
       currentMark.moveCurrent(element);
+      Emitter.emit('getTasks', TaskStorage.getAllTasks);
     });
   };
 

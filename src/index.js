@@ -30,6 +30,7 @@ function updatePage() {
 
 function signOut() {
   auth.signOut();
+  updatePage();
 }
 
 function createWelcomeText(name) {
@@ -265,6 +266,7 @@ function useDatabase() {
   function clear() {
     Emitter.remove('changeTasks', storeTasks);
     TaskStorage.removeAllTasks();
+    TaskStorage.removeAllCategories();
     initialized = false;
   }
 

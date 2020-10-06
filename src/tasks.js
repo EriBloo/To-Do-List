@@ -128,7 +128,7 @@ const Emitter = (() => {
 
 const TaskStorage = (() => {
   let taskStore = [];
-  const categories = new Set();
+  let categories = new Set();
   let currentId = 0;
 
   const addCategory = (category) => {
@@ -139,6 +139,9 @@ const TaskStorage = (() => {
 
   const removeCategory = (category) => {
     categories.delete(category);
+  };
+  const removeAllCategories = () => {
+    categories = new Set();
   };
 
   const getTaskById = (id) => {
@@ -197,7 +200,7 @@ const TaskStorage = (() => {
     Emitter.emit('changeTasks');
   };
   const getAllTasks = () => {
-    Emitter.emit('getTasks', getAllTasks);
+    // Emitter.emit('getTasks', getAllTasks);
     return taskStore;
   };
   const getTasksToDate = (date) => {
@@ -208,7 +211,7 @@ const TaskStorage = (() => {
         tasksToReturn.push(task);
       }
     });
-    Emitter.emit('getTasks', getTasksToDate, date);
+    // Emitter.emit('getTasks', getTasksToDate, date);
     return tasksToReturn;
   };
   const getTasksByCategory = (category) => {
@@ -219,7 +222,7 @@ const TaskStorage = (() => {
         tasksToReturn.push(task);
       }
     });
-    Emitter.emit('getTasks', getTasksByCategory, category.toLowerCase());
+    // Emitter.emit('getTasks', getTasksByCategory, category.toLowerCase());
     return tasksToReturn;
   };
 
@@ -227,6 +230,7 @@ const TaskStorage = (() => {
     addCategory,
     getCategories,
     removeCategory,
+    removeAllCategories,
     addNewTask,
     removeTask,
     removeAllTasks,
